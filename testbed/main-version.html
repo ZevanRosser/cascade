@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="../cascade.js"></script>
+  </head>
+  <body>
+    
+    <script>
+      
+      var A = function(){
+        
+      };
+      A.prototype = {
+        constructor: A,
+        x: 1, 
+        y: 2, 
+        z: 3,
+        methodA: function() {
+          console.log('A', arguments);
+        },
+        methodB: function() {
+          console.log('B', arguments);
+        },
+        methodC: function() {
+          console.log(this.x, this.y, this.z);
+        }
+      };
+      
+      var a = new A();
+      
+      cascade(a)
+        ('methodA')
+        ('jooot')('boot');
+      
+      console.log('nope', a.cascade);
+      
+      cascade.ify(a);
+      
+      a.cascade('methodA')('YUP!');
+        
+             
+      var o = {
+        x: 1, 
+        y: 2, 
+        z: 3,
+        methodA: function() {
+          console.log('a', arguments);
+        },
+        methodB: function() {
+          console.log('b', arguments);
+        },
+        methodC: function() {
+          console.log(this.x, this.y, this.z);
+        }
+      };
+      
+      cascade
+        (o, 'methodA')
+        ('one')
+        ('two')
+        ('three', 'four')
+        .method('methodB')
+        ('yellow')
+        ('red')
+        .set({ x: '100', y: '200' })
+        ('green')
+        .method('methodC')();
+      
+      console.log('done ');
+
+      
+    </script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+    </style>
+  </head>
+  <body>
+    
+    <script>
+      var cascade = function(obj, method) {
+        var c = function() {
+          obj[method].apply(obj, arguments);
+          return c;
+        };
+        c.method = cascade.bind(null, obj);
+        c.set = function(props) {
+          Object.keys(props).forEach(function(prop){
+            obj[prop] = props[prop];
+          });
+          return c;
+        };
+        return c;
+      };
+      
+      var o = {
+        x: 1, 
+        y: 2, 
+        z: 3,
+        methodA: function() {
+          console.log('a', arguments);
+        },
+        methodB: function() {
+          console.log('b', arguments);
+        },
+        methodC: function() {
+          console.log(this.x, this.y, this.z);
+        }
+      };
+      
+      cascade
+        (o, 'methodA')
+        ('one')
+        ('two')
+        ('three', 'four')
+        .method('methodB')
+        ('yellow')
+        ('red')
+        .set({ x: '100', y: '200' })
+        ('green')
+        .method('methodC')();
+      
+      console.log('done ');
+
+      
+    </script>
+  </body>
+</html>
