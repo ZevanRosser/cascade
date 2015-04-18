@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+    </script>
+    <style>
+    </style>
+  </head>
+  <body>
+    
+    <script>
+      
+      (function() {
+        
+        var setProps = function(obj, props) {
+          Object.keys(props).forEach(function(prop){
+            obj[prop] = props[prop];
+          });
+        };
+        
+        var Cascader = function(obj, method) {
+          this.obj = obj;
+          this.method = method;
+          this.cascade = cascade.bind(this, obj);
+          this.boundRun = this.run.bind(this);
+          this.boundRun.method = 
+            this.boundRun.cascade =
+            this.boundRun.run = this.cascade;
+          this.boundRun.set = this.set.bind(this);
+          console.log('instances');
+        };
+        
+        Cascader.prototype = {
+          
+          constructor: Cascader,
+          
+          set: function(props) {
+            setProps(this.obj, props);
+            return this.boundRun;
+          },
+          
+          run: function(){
+            this.obj[this.method].apply(this.obj, arguments);
+            return this.boundRun;
+          }
+          
+        };
+        
+        window.cascade = function(obj, method) {
+          var cascader;
+          
+          if (this instanceof Cascader) {
+            cascader = this;
+            cascader.method = method;
+          } else {
+            cascader = new Cascader(obj, method);
+          }
+         
+          return cascader.boundRun;
+        };
+        
+        
+      })();
+      
+      
+      var o = {
+        x: 1, 
+        y: 2, 
+        z: 3,
+        methodA: function() {
+          console.log('a', arguments);
+        },
+        methodB: function() {
+          console.log('b', arguments);
+        },
+        methodC: function() {
+          console.log(this.x, this.y, this.z);
+        }
+      };
+      
+      
+     cascade
+        (o, 'methodA')
+        ('one')
+        ('two')
+        ('three', 'four')
+        .run('methodB')
+        ('yellow')
+        ('red')
+        .set({x: 100});
+      
+      
+      console.log('done', o);
+      
+    </script> 
+  </body>
+</html>
