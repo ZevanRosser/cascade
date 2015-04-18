@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+    </script>
+    <style>
+    </style>
+  </head>
+  <body>
+    
+    <script>
+      
+      (function() {
+        
+        var setProps = function(obj, props) {
+          Object.keys(props).forEach(function(prop){
+            obj[prop] = props[prop];
+          });
+        };
+        
+        var Cascader = function(obj, method) {
+          this.obj = obj;
+          this.method = method;
+          this.cascade = cascade.bind(null, obj);
+          this.cc = this.c.bind(this);
+          this.cc.method = this.cascade;
+        };
+        
+        Cascader.prototype = {
+          constructor: Cascader,
+          set: function(props) {
+            setProps(obj, props);
+          },
+          c: function(){
+            this.obj[this.method].apply(this.obj, arguments);
+            return this.cc;
+          }
+        };
+        
+        window.cascade = function(obj, method) {
+          var cascader = new Cascader(obj, method),
+              c = cascader.c.bind(cascader);
+          return c;
+        };
+        
+        
+      })();
+      
+      
+      var o = {
+        x: 1, 
+        y: 2, 
+        z: 3,
+        methodA: function() {
+          console.log('a', arguments);
+        },
+        methodB: function() {
+          console.log('b', arguments);
+        },
+        methodC: function() {
+          console.log(this.x, this.y, this.z);
+        }
+      };
+      
+      
+     cascade
+        (o, 'methodA')
+        ('one')
+        ('two')
+        ('three', 'four')
+        .method('methodB')
+        ('yellow')
+        ('red')
+      
+      
+      console.log('done ');
+      
+    </script> 
+  </body>
+</html>
