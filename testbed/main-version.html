@@ -9,6 +9,60 @@
     
     <script>
       
+      (function() {
+  
+        var values = [],
+            METHOD = {};
+        
+        window.cascade = cascade = function(obj, method) {
+          var c;
+          
+          if (this !== METHOD) {
+            values = []; 
+          }
+          
+          c = function() {
+            if (!method) { return; }
+            values.push(obj[method].apply(obj, arguments));
+            return c;
+          };
+          
+          c.method = cascade.bind(METHOD, obj);
+          c.set = function(props) {
+            Object.keys(props).forEach(function(prop){
+              obj[prop] = props[prop];
+            });
+            return c;
+          };
+          
+          c.allValues = function() {
+           return values; 
+          };
+          
+          c.values = function() {
+            return values.filter(function(val) {
+              return val !== undefined
+            });
+          };
+          
+          if (!method) {
+            var partialC = cascade.bind(null, obj);
+            Object.keys(c).forEach(function(prop){
+              partialC[prop] = c[prop];
+            });
+            return partialC;
+          }
+          
+          return c;
+        };
+        
+        cascade.ify = function(obj) {
+          obj.cascade = cascade.bind(null, obj);
+          return obj.cascade;
+        };
+        
+      })();
+      
       var A = function(){
         
       };
@@ -19,9 +73,11 @@
         z: 3,
         methodA: function() {
           console.log('A', arguments);
+          return 'a';
         },
         methodB: function() {
           console.log('B', arguments);
+          return 'b';
         },
         methodC: function() {
           console.log(this.x, this.y, this.z);
@@ -30,9 +86,40 @@
       
       var a = new A();
       
-      cascade(a)
+      var z = cascade(a)
         ('methodA')
-        ('jooot')('boot');
+        ('jooot')('boot').allValues();
+      
+      console.log(z);
+      
+       var o = {
+        x: 1, 
+        y: 2, 
+        z: 3,
+        methodA: function() {
+          console.log('a', arguments);
+          return 'a';
+        },
+        methodB: function() {
+          console.log('b', arguments);
+          return 'b';
+        },
+        methodC: function() {
+          console.log(this.x, this.y, this.z);
+        }
+      };
+      
+      var b = cascade(o)
+          .set({x: 100});
+      
+      console.log('????', o.x);
+      
+      var x = cascade(o, 'methodB')
+                     ()()()
+          .method('methodA')()
+          .method('methodC')(1,2,3).values();
+      console.log(x);
+      
       
       console.log('nope', a.cascade);
       
@@ -68,7 +155,12 @@
         ('green')
         .method('methodC')();
       
-      console.log('done ');
+        console.log('done ');
+      
+      
+     
+        
+        
 
       
     </script>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+  <script src="../cascade.js"></script>
+  </head>
+<body>
+
+  <script>
+  
+    var canvas, c;
+        
+    
+    c = cascade(document.body, 'appendChild')
+      (canvas = document.createElement('canvas'))
+      .first().getContext('2d');
+    
+    console.log(canvas, c);
+      
+    
+  </script>
+</body>
+</html>
