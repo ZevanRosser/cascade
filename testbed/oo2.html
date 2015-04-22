@@ -20,16 +20,29 @@
           });
         };
         
+        var runAliases = [ 'method', 'cascade', 'run', 'set', '$', '_' ];
+        
         var Cascader = function(obj, method) {
+          this.values = [];
           this.obj = obj;
           this.method = method;
           this.cascade = cascade.bind(this, obj);
           this.boundRun = this.run.bind(this);
-          this.boundRun.method = 
-            this.boundRun.cascade =
-            this.boundRun.run = this.cascade;
-          this.boundRun.set = this.set.bind(this);
-          console.log('instances');
+          
+          runAliases.forEach(function(val) {
+            this.boundRun[val] = this.cascade;
+          }.bind(this));
+          
+          this.boundRun.first = this.first.bind(this);
+          this.boundRun.last = this.last.bind(this);
+          this.boundRun.vals = this.vals.bind(this);
+          
+          this.boundRun.all = {
+            first: this.allFirst.bind(this),
+            last: this.allLast.bind(this),
+            vals: this.allVals.bind(this)
+          };
+          
         };
         
         Cascader.prototype = {
@@ -42,25 +55,65 @@
           },
           
           run: function(){
-            this.obj[this.method].apply(this.obj, arguments);
+            this.values.push(
+              this.obj[this.method].apply(this.obj, arguments)
+            );
             return this.boundRun;
+          },
+          
+          vals: function() {
+            return this.values.filter(function(val) {
+              return val !== undefined;
+            });
+          },
+          
+          first: function() {
+            return this.vals()[0]; 
+          },
+          
+          last: function() {
+            var vals = this.vals();
+            return vals[vals.length - 1]; 
+          },
+          
+          allVals: function() {
+            return this.values;
+          },
+          
+          allFirst: function() {
+            return this.values[0];
+          },
+          
+          allLast: function() {
+           return this.values; 
           }
           
         };
+        
         
         window.cascade = function(obj, method) {
           var cascader;
           
           if (this instanceof Cascader) {
             cascader = this;
-            cascader.method = method;
+            
+            if (!(typeof method === 'string')) {
+              this.set(method);
+            } else {
+              cascader.method = method;
+            }
+            
           } else {
             cascader = new Cascader(obj, method);
           }
-         
+          
           return cascader.boundRun;
         };
         
+        cascade.ify = function(obj) {
+          obj.cascade = cascade.bind(null, obj);
+          return obj.cascade;
+        };
         
       })();
       
@@ -71,8 +124,10 @@
         z: 3,
         methodA: function() {
           console.log('a', arguments);
+          return 1;
         },
         methodB: function() {
+          return 2
           console.log('b', arguments);
         },
         methodC: function() {
@@ -80,19 +135,25 @@
         }
       };
       
-      
-     cascade
+      /*
+      var z = cascade
         (o, 'methodA')
         ('one')
         ('two')
         ('three', 'four')
-        .run('methodB')
+        ._('methodB')
         ('yellow')
         ('red')
-        .set({x: 100});
-      
+        ._('methodC')
+        ()
+        ._({x: 100})
+        ().vals();*/
+          
+      cascade.ify(o);
+      o.cascade('methodA')()();
       
       console.log('done', o);
+      // console.log('z', z);
       
     </script> 
   </body>

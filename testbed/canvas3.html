@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+    </script>
+    <style>
+    </style>
+  </head>
+  <body>
+    
+    
+    <script>
+      
+      // @TODO make a bunch of method aliases
+      // figure out some semi-real world cases and 
+      // work towards finalizing the api
+      var c = cascade
+          (document.body, 'setAttribute')
+          ('style', 'margin: 0; padding: 0')
+          .m('appendChild')
+          (canvas = document.createElement('canvas'))
+          .r({
+            width: window.innerWidth,
+            height: window.innerHeight
+          })
+          .m('getContext')('2d').r({
+            fillStyle: 'red'
+          })
+          .m('fillRect')(0, 0, canvas.width, canvas.height)
+          .l(console, 'log')('done');
+      
+    </script> 
+  </body>
+</html>
