@@ -57,9 +57,7 @@
           leapAliases.forEach(function(val) {
             this.boundRun[val] = leap;
           }.bind(this));
-          
-    
-          
+
           this.boundRun.all = {
             first: this.allFirst.bind(this),
             last: this.allLast.bind(this),

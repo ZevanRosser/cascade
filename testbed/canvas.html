@@ -3,19 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <title></title>
-  <script src="../cascade.js"></script>
+  <script src="cascade.js"></script>
   </head>
 <body>
 
   <script>
+    
+    console.clear();
   
     var canvas, c;
         
-    
     c = cascade(document.body, 'appendChild')
       (canvas = document.createElement('canvas'))
-      .first().getContext('2d');
-    
+      .r({width: 300, height: 300}, 'setAttribute')('style', 'opacity: 0.5')
+      .$('getContext')('2d')
+      .r({fillStyle: 'red'}, 'fillRect')(0, 0, canvas.width, canvas.height)
+      ._({fillStyle: 'blue'})(10, 10, 20, 20)(40, 10, 20, 20)(70, 10, 20, 20)
+      .$({strokeStyle: 'white'}, 'beginPath')()
+      .$('moveTo')(100, 100)
+      .$('lineTo')(200, 200)(100, 200)(150, 40)(200, 100)
+      .$('closePath')()
+      .$('stroke')().last();
+      
     console.log(canvas, c);
       
     
