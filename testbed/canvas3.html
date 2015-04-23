@@ -3,10 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title></title>
-    <script>
-    </script>
-    <style>
-    </style>
+    <script src="cascade.js"></script>
   </head>
   <body>
     
@@ -24,15 +21,12 @@
           .r({
             width: window.innerWidth,
             height: window.innerHeight
-          })
-          .m('getContext')('2d').r({
+          },'getContext')('2d').r({
             fillStyle: 'red'
-          })
-          .m('fillRect')(0, 0, canvas.width, canvas.height)
-          .l(console, 'log')('done');
-      
-      
-      // cascade(c, 
+          }, 'fillRect')(0, 0, canvas.width, canvas.height)
+          .next(console, 'log')('done').vals();
+
+      console.log(c);
       
     </script> 
   </body>

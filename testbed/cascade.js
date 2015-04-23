@@ -41,6 +41,8 @@
       this.boundRun[val] = leap;
     }.bind(this));
     
+    this.boundRun.next = this.next.bind(this);
+    
     this.boundRun.all = {
       first: this.allFirst.bind(this),
       last: this.allLast.bind(this),
@@ -74,7 +76,15 @@
     leap: function(method, otherMethod) {
       this.objects.pop();
       var obj = this.objects[this.objects.length - 1];
-      console.log('?', obj);
+      if (method && typeof method !== 'string') {
+        setProps(obj, method);
+        method = null;
+      }
+      this.obj = obj;
+      return cascade.bind(this, obj)(method || otherMethod);
+    },
+    
+    next: function(obj, method, otherMethod) {
       if (method && typeof method !== 'string') {
         setProps(obj, method);
         method = null;
@@ -84,7 +94,6 @@
     },
     
     run: function(){
-      
       this.values.push(
         this.obj[this.method].apply(this.obj, arguments)
       );

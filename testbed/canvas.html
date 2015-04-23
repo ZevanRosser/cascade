@@ -16,16 +16,19 @@
     c = cascade(document.body, 'appendChild')
       (canvas = document.createElement('canvas'))
       .r({width: 300, height: 300}, 'setAttribute')('style', 'opacity: 0.5')
-      .$('getContext')('2d')
+      .m('getContext')('2d')
       .r({fillStyle: 'red'}, 'fillRect')(0, 0, canvas.width, canvas.height)
       ._({fillStyle: 'blue'})(10, 10, 20, 20)(40, 10, 20, 20)(70, 10, 20, 20)
-      .$({strokeStyle: 'white'}, 'beginPath')()
-      .$('moveTo')(100, 100)
-      .$('lineTo')(200, 200)(100, 200)(150, 40)(200, 100)
-      .$('closePath')()
-      .$('stroke')().last();
-      
-    console.log(canvas, c);
+      .m({strokeStyle: 'white'}, 'beginPath')()
+      .m('moveTo')(100, 100)
+      .m('lineTo')(200, 200)(100, 200)(150, 40)(200, 100)
+      .m('closePath')()
+      .m('stroke')()
+      .next(window, 'setInterval')(function() { // jump alias ?
+        console.log('z');
+      }, 30).vals()[1];
+    
+      console.log(c);
       
     
   </script>
