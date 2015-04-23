@@ -20,22 +20,32 @@
           });
         };
         
-        var runAliases = [ 'method', 'cascade', 'run', 'set', '$', '_' ];
+        var mainAliases = [ 'm', 'method', 'cascade', 'run', 'set', '$', '_' ],
+            returnValueAliases = [ 'r', 'ret', 'dive' ],
+            // .r(setable, method), .r(index, setable), .r('method')
+            // .r() (index - 1)
+            // .top() = .r(values.length-1)
+            leapAliases = [ 'l', 'up', 'leap' ];
+            // 
+        
+        
         
         var Cascader = function(obj, method) {
           this.values = [];
+          this.objects = [obj];
           this.obj = obj;
           this.method = method;
           this.cascade = cascade.bind(this, obj);
           this.boundRun = this.run.bind(this);
           
-          runAliases.forEach(function(val) {
+          mainAliases.forEach(function(val) {
             this.boundRun[val] = this.cascade;
           }.bind(this));
           
           this.boundRun.first = this.first.bind(this);
           this.boundRun.last = this.last.bind(this);
           this.boundRun.vals = this.vals.bind(this);
+          this.boundRun.ret = this.ret.bind(this);
           
           this.boundRun.all = {
             first: this.allFirst.bind(this),
@@ -54,7 +64,20 @@
             return this.boundRun;
           },
           
+          ret: function(method) {
+            var obj = this.last();
+            this.objects.push(this.last());
+            if (method && typeof method !== 'string') {
+              setProps(obj, method);
+              method = null;
+            }
+            this.obj = obj;
+            console.log('method', obj, this.values);
+            return cascade.bind(this, obj)(method);
+          },
+
           run: function(){
+            
             this.values.push(
               this.obj[this.method].apply(this.obj, arguments)
             );
@@ -85,7 +108,7 @@
           },
           
           allLast: function() {
-           return this.values; 
+            return this.values; 
           }
           
         };
@@ -94,11 +117,18 @@
         window.cascade = function(obj, method) {
           var cascader;
           
+          
+          
           if (this instanceof Cascader) {
             cascader = this;
             
+            if (!method) {
+              console.log(obj);
+              return cascade.bind(cascader, obj) ;
+            }
+            
             if (!(typeof method === 'string')) {
-              this.set(method);
+              cascader.set(method);
             } else {
               cascader.method = method;
             }
@@ -127,15 +157,16 @@
           return 1;
         },
         methodB: function() {
-          return 2
+          return 2;
           console.log('b', arguments);
         },
         methodC: function() {
           console.log(this.x, this.y, this.z);
+          return {aaa: 1, f: function() { console.log('foggy'); }};
         }
       };
       
-      /*
+      
       var z = cascade
         (o, 'methodA')
         ('one')
@@ -144,16 +175,16 @@
         ._('methodB')
         ('yellow')
         ('red')
-        ._('methodC')
-        ()
-        ._({x: 100})
-        ().vals();*/
+          ._('methodC')().ret({
+            aaa: 2 0
+          })('f')().last()
+      
+      
+       
           
-      cascade.ify(o);
-      o.cascade('methodA')()();
       
       console.log('done', o);
-      // console.log('z', z);
+      console.log('z', z);
       
     </script> 
   </body>
