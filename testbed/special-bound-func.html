@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+  <script src="cascade.js"></script>  
+</head>
+<body>
+ 
+ <script>
+ 
+   cascade(window, 'addEventListener')('resize', function(e) {
+     
+     console.log(this.vals(), 'hello');
+     
+     cascade(console, 'log')('a')('b')('c');
+     
+   }.bind(cascade()))
+     .n(Math, 'cos')(10)(20)(20);
+   
+   cascade(console, 'log')
+     ('one');
+   
+   console.log(cascade().last());
+   
+ </script> 
+</body>
+</html>

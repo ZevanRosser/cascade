@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+  <script src="cascade.js"></script>
+</head>
+<body>
+  
+  
+  <script>
+    
+    var canvas;
+    
+    var z = cascade
+      (document.body, 'appendChild')(canvas = document.createElement('canvas'))
+      .r({width: window.innerWidth, height: window.innerHeight }, 'getContext')('2d')
+      .r({fillStyle: '#477aad'}, 'beginPath')()
+      .$('lineTo')
+      .$(0, Math.PI * 2, 0.02, function($, theta) {
+         var radius = Math.random() * 150 + 100;
+        $(canvas.width / 2 + radius * Math.cos(theta),
+          canvas.height / 2 + radius * Math.sin(theta));
+      }).$('fill')();
+      
+      
+  
+    /*
+
+canvas = document.body.appendChild document.createElement "canvas"
+c = canvas.getContext "2d"
+halfWidth  = (canvas.width  = window.innerWidth ) / 2
+halfHeight = (canvas.height = window.innerHeight) / 2
+c.fillStyle = "#477aad"
+c.beginPath()
+for theta in [0..Math.PI * 2] by 0.02
+  radius = Math.random() * 150 + 100
+  c.lineTo(halfWidth  + radius * Math.cos theta
+           halfHeight + radius * Math.sin theta) 
+c.fill()
+
+
+
+
+
+
+
+  
+    */
+  
+  </script>
+</body>
+</html>

@@ -17,8 +17,7 @@
           (document.body, 'setAttribute')
           ('style', 'margin: 0; padding: 0')
           .m('appendChild')
-          (canvas = document.createElement('canvas'))
-          .r({
+          (canvas = document.createElement('canvas')).r({
             width: window.innerWidth,
             height: window.innerHeight
           },'getContext')('2d').r({

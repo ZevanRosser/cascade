@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="cascade.js"></script>
+  </head>
+  <body>
+    
+    
+    <script>
+      
+      var resize;
+      
+      cascade
+        (document.body, 'setAttribute')('style', 'margin: 0; padding: 0')
+        .m('appendChild')(canvas = document.createElement('canvas'))
+        .r('getContext')('2d')
+        .n(window, 'addEventListener')('resize', resize = function(e) {
+          var halfWidth = (canvas.width = window.innerWidth) / 2,
+              halfHeight = (canvas.height = window.innerHeight) / 2;
+          
+          this.r({fillStyle: '#477aad'}, 'beginPath')()
+            .$('lineTo')
+            .$(0, Math.PI * 2, 0.02, function($, theta) {
+              var radius = Math.random() * 150 + 100;
+              $(halfWidth + radius * Math.cos(theta),
+                halfHeight + radius * Math.sin(theta));
+            }).$('fill')();
+          
+        }.bind(cascade()));
+      
+      resize();
+      
+    </script>
+  </body>
+</html>
