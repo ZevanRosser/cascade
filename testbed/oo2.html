@@ -25,12 +25,14 @@
             // .r(setable, method), .r(index, setable), .r('method')
             // .r() (index - 1)
             // .top() = .r(values.length-1)
-            leapAliases = [ 'l', 'up', 'leap' ];
+            leapAliases = [ 'l', 'up', 'leap', 'prev' ];
             // 
         
         
         
         var Cascader = function(obj, method) {
+          var ret, leap;
+          
           this.values = [];
           this.objects = [obj];
           this.obj = obj;
@@ -45,7 +47,18 @@
           this.boundRun.first = this.first.bind(this);
           this.boundRun.last = this.last.bind(this);
           this.boundRun.vals = this.vals.bind(this);
-          this.boundRun.ret = this.ret.bind(this);
+          
+          ret = this.ret.bind(this);
+          returnValueAliases.forEach(function(val) {
+            this.boundRun[val] = ret;
+          }.bind(this));
+          
+          leap = this.leap.bind(this);
+          leapAliases.forEach(function(val) {
+            this.boundRun[val] = leap;
+          }.bind(this));
+          
+    
           
           this.boundRun.all = {
             first: this.allFirst.bind(this),
@@ -64,7 +77,7 @@
             return this.boundRun;
           },
           
-          ret: function(method) {
+          ret: function(method, otherMethod) {
             var obj = this.last();
             this.objects.push(this.last());
             if (method && typeof method !== 'string') {
@@ -72,8 +85,19 @@
               method = null;
             }
             this.obj = obj;
-            console.log('method', obj, this.values);
-            return cascade.bind(this, obj)(method);
+            return cascade.bind(this, obj)(method || otherMethod);
+          },
+          
+          leap: function(method, otherMethod) {
+            this.objects.pop();
+            var obj = this.objects[this.objects.length - 1];
+            console.log('?', obj);
+            if (method && typeof method !== 'string') {
+              setProps(obj, method);
+              method = null;
+            }
+            this.obj = obj;
+            return cascade.bind(this, obj)(method || otherMethod);
           },
 
           run: function(){
@@ -162,7 +186,7 @@
         },
         methodC: function() {
           console.log(this.x, this.y, this.z);
-          return {aaa: 1, f: function() { console.log('foggy'); }};
+          return {aaa: 1, f: function(co) { console.log('foggy', co); }};
         }
       };
       
@@ -175,9 +199,10 @@
         ._('methodB')
         ('yellow')
         ('red')
-          ._('methodC')().ret({
-            aaa: 2 0
-          })('f')().last()
+        ._('methodC')
+        ().ret({
+          aaa: 20
+        }, 'f')('zevan').up('methodA')('GNARLY!');
       
       
        
